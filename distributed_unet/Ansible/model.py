@@ -28,19 +28,19 @@ from tqdm import tqdm
 
 def dice_coef(y_true, y_pred, smooth = 1.):
 
-	intersection = tf.reduce_sum(y_true * y_pred)
-	union_set = tf.reduce_sum(y_true) + tf.reduce_sum(y_pred)
+	intersection = tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
+	union_set = tf.reduce_sum(y_true, axis=(1,2,3)) + tf.reduce_sum(y_pred, axis=(1,2,3))
 	dice = (tf.constant(2.) * intersection + smooth) / (union_set + smooth)
-	return dice
+	return tf.reduce_mean(dice)
 
 
 def dice_coef_loss(y_true, y_pred, smooth = 1.):
 
-	intersection = tf.reduce_sum(y_true * y_pred)
-	union_set = tf.reduce_sum(y_true) + tf.reduce_sum(y_pred)
+	intersection = tf.reduce_sum(y_true * y_pred, axis=(1,2,3))
+	union_set = tf.reduce_sum(y_true, axis=(1,2,3)) + tf.reduce_sum(y_pred, axis=(1,2,3))
 	loss = -tf.log(tf.constant(2.) * intersection + smooth) + \
 		tf.log(union_set + smooth)
-	return loss
+	return tf.reduce_mean(loss)
 
 def sensitivity(y_true, y_pred, smooth = 1.):
 
